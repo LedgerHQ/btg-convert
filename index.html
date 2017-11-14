@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<title>P2SH Converter</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	</head>
+	
+
+	<script src='bitcoinjs.min.js'></script>
+	<script type="text/javascript">
+		function convert() {
+			try {
+				address = document.getElementById('address').value;
+				decoded = bitcoin.address.fromBase58Check(address);
+				version = decoded['version']
+
+				switch (version) {
+					case 0:
+						message = "BTG p2pkh address: ";
+						version = 38;
+						break;
+					case 38:
+						message = "BTC p2pkh address: ";
+						version = 0;
+						break;
+					case 5:
+						message = "BTG p2sh address: ";
+						version = 23;
+						break;
+					case 23:
+						message = "BTC p2sh address: ";
+						version = 5;
+						break;
+					default:
+						throw "unknown";
+				}
+				address = bitcoin.address.toBase58Check(decoded['hash'], version);
+			} catch(err) {
+				message = "Please enter a valid address."
+			    address = "";
+			}
+
+			document.getElementById('message').innerText = message + address;
+		}
+	</script>
+		<div class="container">
+<nav class="navbar navbar-default">
+
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+    <a class="navbar-brand" href="#">BTC to BTG Converter</a>
+    </div>
+   
+
+</nav>
+
+
+		<div class="form-group row">
+			<div class="col-md-4">
+				<label for="address">Address:</label>
+
+				<input class="form-control" id="address" size="40" value=""/>
+			</div>
+			<div class="col-md-12">
+				<button class="btn btn-primary" type="button" onclick="convert();" style="margin-top: 4px">Convert</button>
+			</div>
+		</div>
+		
+		
+		<label id="message"/>
+
+	</div>
+</html>
